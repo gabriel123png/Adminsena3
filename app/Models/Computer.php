@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Computer extends Model
 {
     use HasFactory;
+
+    protected $table = 'computers';
+
+    protected $fillable = [
+        'number',
+        'brand',
+    ];
 }
