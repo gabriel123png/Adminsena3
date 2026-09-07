@@ -50,32 +50,29 @@
         box-shadow: none !important;
     }
 
-    /* Menú móvil */
-    @media (max-width: 991.98px) {
+    /* Menú colapsado en todos los tamaños */
+    .admin-menu {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, .18);
+    }
 
-        .admin-menu {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, .18);
-        }
+    .admin-menu .nav-link {
+        color: #333 !important;
+        padding: 12px 14px !important;
+        margin: 2px 0;
+        border-radius: 7px;
+    }
 
-        .admin-menu .nav-link {
-            color: #333 !important;
-            padding: 12px 14px !important;
-            margin: 2px 0;
-            border-radius: 7px;
-        }
-
-        .admin-menu .nav-link:hover {
-            background-color: #f1f1f1;
-            color: var(--sena-green) !important;
-        }
+    .admin-menu .nav-link:hover {
+        background-color: #f1f1f1;
+        color: var(--sena-green) !important;
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
+<nav class="navbar navbar-dark admin-navbar">
 
 
 <div class="container-fluid px-3 px-lg-4">
@@ -116,6 +113,7 @@
         class="collapse navbar-collapse admin-menu"
         id="adminNavbar">
 
+        @if(auth()->check() && auth()->user()->role === 'admin')
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 
@@ -203,7 +201,30 @@
             </li>
 
 
+            {{-- APRENDICES --}}
+            <li class="nav-item">
+
+                <a
+                    class="nav-link"
+                    href="{{ route('apprentices.index') }}">
+
+                    👨‍🎓 Aprendices
+
+                </a>
+
+            </li>
+
+
         </ul>
+        @endif
+
+        @if(auth()->check() && auth()->user()->role === 'aprendiz')
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('apprentice.dashboard') }}">🎓 Mi panel</a>
+                </li>
+            </ul>
+        @endif
 
 
         {{-- USUARIO --}}
@@ -227,16 +248,12 @@
 
                         <a
                             class="dropdown-item"
-                            href="{{ route('carnet.index') }}">
+                            href="#">
 
-                            Mi perfil
+                            {{ auth()->user()->email }}
 
                         </a>
 
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
                     </li>
 
                     <li>
