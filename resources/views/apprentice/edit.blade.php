@@ -6,7 +6,7 @@
 <div class="card">
     <div class="card-header"><h1>Editar Aprendiz</h1></div>
     <div class="card-body">
-        <form action="{{ route('apprentices.update', $apprentice) }}" method="POST">
+        <form action="{{ route('apprentices.update', $apprentice) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             @include('apprentice.form')

@@ -18,6 +18,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Foto</th>
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>Celular</th>
@@ -30,6 +31,13 @@
                 @forelse($apprentices as $apprentice)
                     <tr>
                         <td>{{ $apprentice->id }}</td>
+                        <td>
+                            @if($apprentice->photo)
+                                <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                            @else
+                                Sin foto
+                            @endif
+                        </td>
                         <td>{{ $apprentice->name }}</td>
                         <td>{{ $apprentice->email }}</td>
                         <td>{{ $apprentice->cell_number }}</td>
@@ -46,7 +54,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="text-center">No hay aprendices registrados.</td></tr>
+                    <tr><td colspan="8" class="text-center">No hay aprendices registrados.</td></tr>
                 @endforelse
             </tbody>
         </table>

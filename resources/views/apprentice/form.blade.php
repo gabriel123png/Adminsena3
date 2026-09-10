@@ -17,6 +17,15 @@
 </div>
 
 <div class="mb-3">
+    <label class="form-label">Foto</label>
+    <input type="file" name="photo" class="form-control" accept="image/jpeg,image/png,image/webp">
+    @if($apprentice?->photo)
+        <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" class="mt-2" style="width: 100px; height: 100px; object-fit: cover;">
+    @endif
+    @error('photo')<div class="text-danger">{{ $message }}</div>@enderror
+</div>
+
+<div class="mb-3">
     <label class="form-label">Curso</label>
     <select name="course_id" class="form-control" required>
         <option value="">-- Seleccione un curso --</option>

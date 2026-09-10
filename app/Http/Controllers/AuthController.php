@@ -35,7 +35,17 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect()->intended(route('home'));
+        $response = redirect()->intended(route('home'));
+
+        $rememberedCookie = 'remembered_email_' . $credentials['role'];
+
+        if ($request->boolean('remember')) {
+            $response->withCookie(cookie($rememberedCookie, $credentials['email'], 60 * 24 * 30));
+        } else {
+            $response->withoutCookie($rememberedCookie);
+        }
+
+        return $response;
     }
 
     public function logout(Request $request)

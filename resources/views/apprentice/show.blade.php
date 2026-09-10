@@ -8,6 +8,14 @@
     <div class="card-body">
         <dl class="row">
             <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">{{ $apprentice->name }}</dd>
+            <dt class="col-sm-3">Foto</dt>
+            <dd class="col-sm-9">
+                @if($apprentice->photo)
+                    <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 140px; height: 140px; object-fit: cover;">
+                @else
+                    Sin foto
+                @endif
+            </dd>
             <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{ $apprentice->email }}</dd>
             <dt class="col-sm-3">Celular</dt><dd class="col-sm-9">{{ $apprentice->cell_number }}</dd>
             <dt class="col-sm-3">Curso</dt><dd class="col-sm-9">{{ $apprentice->course->course_number ?? 'N/A' }}</dd>

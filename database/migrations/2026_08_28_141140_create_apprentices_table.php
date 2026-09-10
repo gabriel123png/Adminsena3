@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('cell_number');
+            $table->string('photo')->nullable();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->foreignId('computer_id')->nullable()->constrained('computers')->nullOnDelete();
             $table->timestamps();

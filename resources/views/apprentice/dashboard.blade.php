@@ -14,6 +14,11 @@
             <div class="card-body text-center">
                 <h5 class="card-title">Mi cuenta</h5>
                 @if($apprentice)
+                    @if($apprentice->photo)
+                        <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                    @else
+                        <p class="text-muted">Sin foto</p>
+                    @endif
                     <p class="card-text">Nombre: {{ $apprentice->name }}</p>
                     <p class="card-text">Correo: {{ $apprentice->email }}</p>
                     <p class="card-text">Celular: {{ $apprentice->cell_number }}</p>

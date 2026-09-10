@@ -9,6 +9,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ApprenticeController;
 use App\Http\Controllers\AuthController;
 use App\Models\Apprentice;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,11 +23,14 @@ use App\Models\Apprentice;
 */
 
 Route::get('/', function () {
+    $apprentices = Apprentice::orderBy('name')->get(['name', 'email']);
+    $administrators = User::where('role', 'admin')->orderBy('name')->get(['name', 'email']);
+
     if (auth()->check() && auth()->user()->role === 'aprendiz') {
         return redirect()->route('apprentice.dashboard');
     }
 
-    return view('home');
+    return view('home', compact('apprentices', 'administrators'));
 })->name('home');
 
 Route::get('/login', function () {

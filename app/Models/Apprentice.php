@@ -13,6 +13,7 @@ class Apprentice extends Model
         'name',
         'email',
         'cell_number',
+        'photo',
         'course_id',
         'computer_id',
     ];
