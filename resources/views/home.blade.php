@@ -66,21 +66,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="account" class="form-label">Selecciona tu nombre</label>
-                        <select id="account" name="email" class="form-select" required autofocus>
-                            <option value="">-- Selecciona tu nombre --</option>
+                        <label for="account" class="form-label">Escribe tu nombre</label>
+                        <input id="account" name="account_name" list="account-options" class="form-control" value="{{ old('account_name') }}" placeholder="Escribe o selecciona tu nombre" required autofocus autocomplete="off">
+                        <datalist id="account-options">
                             @foreach($apprentices as $apprentice)
-                                <option value="{{ $apprentice->email }}" data-role="aprendiz" {{ old('email', request()->cookie('remembered_email_aprendiz')) === $apprentice->email ? 'selected' : '' }}>
-                                    {{ $apprentice->name }}
-                                </option>
+                                <option value="{{ $apprentice->name }}" data-role="aprendiz" data-email="{{ $apprentice->email }}"></option>
                             @endforeach
                             @foreach($administrators as $administrator)
-                                <option value="{{ $administrator->email }}" data-role="admin" {{ old('email', request()->cookie('remembered_email_admin')) === $administrator->email ? 'selected' : '' }}>
-                                    {{ $administrator->name }}
-                                </option>
+                                <option value="{{ $administrator->name }}" data-role="admin" data-email="{{ $administrator->email }}"></option>
                             @endforeach
-                        </select>
-                        @error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                        </datalist>
+                        @error('account_name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">
@@ -99,6 +95,7 @@
                 <script>
                     const roleField = document.getElementById('role');
                     const accountField = document.getElementById('account');
+                    const accountOptions = Array.from(document.querySelectorAll('#account-options option'));
                     const rememberField = document.getElementById('remember');
                     const rememberedEmails = {
                         admin: @json(request()->cookie('remembered_email_admin')),
@@ -107,24 +104,11 @@
 
                     function updateAccounts() {
                         const selectedRole = roleField.value;
-                        let hasSelectedAccount = false;
+                        const rememberedEmail = rememberedEmails[selectedRole];
+                        const rememberedOption = accountOptions.find(option => option.dataset.email === rememberedEmail && option.dataset.role === selectedRole);
 
-                        Array.from(accountField.options).forEach((option, index) => {
-                            const isAvailable = index === 0 || option.dataset.role === selectedRole;
-                            option.hidden = !isAvailable;
-                            option.disabled = !isAvailable;
-
-                            if (isAvailable && option.value === rememberedEmails[selectedRole]) {
-                                option.selected = true;
-                                hasSelectedAccount = true;
-                            }
-                        });
-
-                        if (!hasSelectedAccount) {
-                            accountField.selectedIndex = 0;
-                        }
-
-                        rememberField.checked = hasSelectedAccount;
+                        accountField.value = rememberedOption ? rememberedOption.value : '';
+                        rememberField.checked = Boolean(rememberedOption);
                     }
 
                     roleField.addEventListener('change', () => {

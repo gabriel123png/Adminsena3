@@ -16,15 +16,23 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|string|max:255',
+            'account_name' => 'required|string|max:255',
             'password' => 'required|string',
             'role' => 'required|in:admin,aprendiz',
         ]);
 
+        $account = $credentials['role'] === 'admin'
+            ? User::where('role', 'admin')->where('name', $credentials['account_name'])->first()
+            : \App\Models\Apprentice::where('name', $credentials['account_name'])->first();
+
+        if (!$account) {
+            return back()->withErrors(['account_name' => 'El nombre no está registrado para el rol seleccionado.'])->withInput();
+        }
+
         $user = User::firstOrCreate(
-            ['email' => $credentials['email']],
+            ['email' => $account->email],
             [
-                'name' => $credentials['email'],
+                'name' => $account->name,
                 'password' => $credentials['password'],
                 'role' => $credentials['role'],
             ]
@@ -40,7 +48,7 @@ class AuthController extends Controller
         $rememberedCookie = 'remembered_email_' . $credentials['role'];
 
         if ($request->boolean('remember')) {
-            $response->withCookie(cookie($rememberedCookie, $credentials['email'], 60 * 24 * 30));
+            $response->withCookie(cookie($rememberedCookie, $account->email, 60 * 24 * 30));
         } else {
             $response->withoutCookie($rememberedCookie);
         }
