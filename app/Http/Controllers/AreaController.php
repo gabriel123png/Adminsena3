@@ -7,21 +7,18 @@ use App\Models\Area;
 
 class AreaController extends Controller
 {
-    //
+    // Listar todas las áreas para la App Móvil
     public function index()
     {
         $areas = Area::all();
 
-        return view('area.index', compact('areas'));
+        return response()->json([
+            'success' => true,
+            'data' => $areas
+        ], 200);
     }
 
-    // Mostrar formulario para crear
-    public function create()
-    {
-        return view('area.create');
-    }
-
-    // Guardar área
+    // Registrar una nueva área desde la App Móvil
     public function store(Request $request)
     {
         $request->validate([
@@ -29,23 +26,28 @@ class AreaController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
-        Area::create([
+        $area = Area::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()
-            ->route('areas.index')
-            ->with('success', 'Área registrada correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Área registrada correctamente.',
+            'data' => $area
+        ], 201);
     }
 
-    // Mostrar formulario de edición
-    public function edit(Area $area)
+    // Consultar una sola área por ID desde la App Móvil
+    public function show(Area $area)
     {
-        return view('area.edit', compact('area'));
+        return response()->json([
+            'success' => true,
+            'data' => $area
+        ], 200);
     }
 
-    // Actualizar área
+    // Actualizar una área desde la App Móvil
     public function update(Request $request, Area $area)
     {
         $request->validate([
@@ -58,18 +60,21 @@ class AreaController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()
-            ->route('areas.index')
-            ->with('success', 'Área actualizada correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Área actualizada correctamente.',
+            'data' => $area
+        ], 200);
     }
 
-    // Eliminar área
+    // Eliminar una área desde la App Móvil
     public function destroy(Area $area)
     {
         $area->delete();
 
-        return redirect()
-            ->route('areas.index')
-            ->with('success', 'Área eliminada correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Área eliminada correctamente.'
+        ], 200);
     }
 }

@@ -7,19 +7,18 @@ use App\Models\Training_center as TrainingCenter;
 
 class TrainingCenterController extends Controller
 {
-    //
+    // Listar todos los centros de formación para la App Móvil
     public function index()
     {
         $trainingCenters = TrainingCenter::all();
 
-        return view('training_centers.index', compact('trainingCenters'));
+        return response()->json([
+            'success' => true,
+            'data' => $trainingCenters
+        ], 200);
     }
 
-    public function create()
-    {
-        return view('training_centers.create');
-    }
-
+    // Registrar un nuevo centro de formación desde la App Móvil
     public function store(Request $request)
     {
         $request->validate([
@@ -27,21 +26,28 @@ class TrainingCenterController extends Controller
             'location' => 'required|string|max:255',
         ]);
 
-        TrainingCenter::create([
+        $trainingCenter = TrainingCenter::create([
             'name' => $request->name,
             'location' => $request->location,
         ]);
 
-        return redirect()
-            ->route('training_centers.index')
-            ->with('success', 'Centro de formación registrado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Centro de formación registrado correctamente.',
+            'data' => $trainingCenter
+        ], 201);
     }
 
-    public function edit(TrainingCenter $trainingCenter)
+    // Consultar un solo centro de formación por ID desde la App Móvil
+    public function show(TrainingCenter $trainingCenter)
     {
-        return view('training_centers.edit', compact('trainingCenter'));
+        return response()->json([
+            'success' => true,
+            'data' => $trainingCenter
+        ], 200);
     }
 
+    // Actualizar un centro de formación desde la App Móvil
     public function update(Request $request, TrainingCenter $trainingCenter)
     {
         $request->validate([
@@ -54,17 +60,21 @@ class TrainingCenterController extends Controller
             'location' => $request->location,
         ]);
 
-        return redirect()
-            ->route('training_centers.index')
-            ->with('success', 'Centro de formación actualizado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Centro de formación actualizado correctamente.',
+            'data' => $trainingCenter
+        ], 200);
     }
 
+    // Eliminar un centro de formación desde la App Móvil
     public function destroy(TrainingCenter $trainingCenter)
     {
         $trainingCenter->delete();
 
-        return redirect()
-            ->route('training_centers.index')
-            ->with('success', 'Centro de formación eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Centro de formación eliminado correctamente.'
+        ], 200);
     }
 }

@@ -7,21 +7,18 @@ use App\Models\Computer;
 
 class ComputerController extends Controller
 {
-    // Mostrar lista de computadores
+    // Listar todos los computadores para la App Móvil
     public function index()
     {
         $computers = Computer::all();
 
-        return view('computer.index', compact('computers'));
+        return response()->json([
+            'success' => true,
+            'data' => $computers
+        ], 200);
     }
 
-    // Mostrar formulario para crear
-    public function create()
-    {
-        return view('computer.create');
-    }
-
-    // Guardar computador
+    // Registrar un nuevo computador desde la App Móvil
     public function store(Request $request)
     {
         $request->validate([
@@ -29,29 +26,28 @@ class ComputerController extends Controller
             'brand' => 'required|string|max:255',
         ]);
 
-        Computer::create([
+        $computer = Computer::create([
             'number' => $request->number,
             'brand' => $request->brand,
         ]);
 
-        return redirect()
-            ->route('computers.index')
-            ->with('success', 'Computador registrado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Computador registrado correctamente.',
+            'data' => $computer
+        ], 201);
     }
 
-    // Mostrar detalles de un computador
+    // Consultar un solo computador por ID desde la App Móvil
     public function show(Computer $computer)
     {
-        return view('computer.show', compact('computer'));
+        return response()->json([
+            'success' => true,
+            'data' => $computer
+        ], 200);
     }
 
-    // Mostrar formulario de edición
-    public function edit(Computer $computer)
-    {
-        return view('computer.edit', compact('computer'));
-    }
-
-    // Actualizar computador
+    // Actualizar un computador desde la App Móvil
     public function update(Request $request, Computer $computer)
     {
         $request->validate([
@@ -64,18 +60,21 @@ class ComputerController extends Controller
             'brand' => $request->brand,
         ]);
 
-        return redirect()
-            ->route('computers.index')
-            ->with('success', 'Computador actualizado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Computador actualizado correctamente.',
+            'data' => $computer
+        ], 200);
     }
 
-    // Eliminar computador
+    // Eliminar un computador desde la App Móvil
     public function destroy(Computer $computer)
     {
         $computer->delete();
 
-        return redirect()
-            ->route('computers.index')
-            ->with('success', 'Computador eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Computador eliminado correctamente.'
+        ], 200);
     }
 }

@@ -9,24 +9,18 @@ use App\Models\Training_center;
 
 class CourseController extends Controller
 {
-    // Mostrar lista de cursos
+    // Listar todos los cursos con sus relaciones para la App Móvil
     public function index()
     {
         $courses = Course::with(['area', 'trainingCenter'])->get();
 
-        return view('course.index', compact('courses'));
+        return response()->json([
+            'success' => true,
+            'data' => $courses
+        ], 200);
     }
 
-    // Mostrar formulario para crear
-    public function create()
-    {
-        $areas = Area::all();
-        $trainingCenters = Training_center::all();
-
-        return view('course.create', compact('areas', 'trainingCenters'));
-    }
-
-    // Guardar curso
+    // Registrar un nuevo curso desde la App Móvil
     public function store(Request $request)
     {
         $request->validate([
@@ -36,34 +30,30 @@ class CourseController extends Controller
             'training_center_id' => 'required|exists:training_centers,id',
         ]);
 
-        Course::create([
+        $course = Course::create([
             'course_number' => $request->course_number,
             'day' => $request->day,
             'area_id' => $request->area_id,
             'training_center_id' => $request->training_center_id,
         ]);
 
-        return redirect()
-            ->route('courses.index')
-            ->with('success', 'Curso registrado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Curso registrado correctamente.',
+            'data' => $course->load(['area', 'trainingCenter'])
+        ], 201);
     }
 
-    // Mostrar detalles de un curso
+    // Consultar un solo curso por ID desde la App Móvil
     public function show(Course $course)
     {
-        return view('course.show', compact('course'));
+        return response()->json([
+            'success' => true,
+            'data' => $course->load(['area', 'trainingCenter'])
+        ], 200);
     }
 
-    // Mostrar formulario de edición
-    public function edit(Course $course)
-    {
-        $areas = Area::all();
-        $trainingCenters = Training_center::all();
-
-        return view('course.edit', compact('course', 'areas', 'trainingCenters'));
-    }
-
-    // Actualizar curso
+    // Actualizar un curso desde la App Móvil
     public function update(Request $request, Course $course)
     {
         $request->validate([
@@ -80,18 +70,21 @@ class CourseController extends Controller
             'training_center_id' => $request->training_center_id,
         ]);
 
-        return redirect()
-            ->route('courses.index')
-            ->with('success', 'Curso actualizado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Curso actualizado correctamente.',
+            'data' => $course->load(['area', 'trainingCenter'])
+        ], 200);
     }
 
-    // Eliminar curso
+    // Eliminar un curso desde la App Móvil
     public function destroy(Course $course)
     {
         $course->delete();
 
-        return redirect()
-            ->route('courses.index')
-            ->with('success', 'Curso eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Curso eliminado correctamente.'
+        ], 200);
     }
 }

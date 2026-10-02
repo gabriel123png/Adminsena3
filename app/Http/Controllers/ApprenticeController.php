@@ -10,21 +10,18 @@ use App\Models\Computer;
 
 class ApprenticeController extends Controller
 {
+   // Listar todos los aprendices con sus relaciones para la App Móvil
     public function index()
     {
         $apprentices = Apprentice::with(['course', 'computer'])->get();
 
-        return view('apprentice.index', compact('apprentices'));
+        return response()->json([
+            'success' => true,
+            'data' => $apprentices
+        ], 200);
     }
 
-    public function create()
-    {
-        $courses = Course::all();
-        $computers = Computer::all();
-
-        return view('apprentice.create', compact('courses', 'computers'));
-    }
-
+    // Registrar un nuevo aprendiz desde la App Móvil (soporta subida de foto)
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,26 +37,25 @@ class ApprenticeController extends Controller
             $validated['photo'] = $request->file('photo')->store('apprentices', 'public');
         }
 
-        Apprentice::create($validated);
+        $apprentice = Apprentice::create($validated);
 
-        return redirect()
-            ->route('apprentices.index')
-            ->with('success', 'Aprendiz registrado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Aprendiz registrado correctamente.',
+            'data' => $apprentice->load(['course', 'computer'])
+        ], 201);
     }
 
+    // Consultar un solo aprendiz por ID desde la App Móvil
     public function show(Apprentice $apprentice)
     {
-        return view('apprentice.show', compact('apprentice'));
+        return response()->json([
+            'success' => true,
+            'data' => $apprentice->load(['course', 'computer'])
+        ], 200);
     }
 
-    public function edit(Apprentice $apprentice)
-    {
-        $courses = Course::all();
-        $computers = Computer::all();
-
-        return view('apprentice.edit', compact('apprentice', 'courses', 'computers'));
-    }
-
+    // Actualizar un aprendiz desde la App Móvil
     public function update(Request $request, Apprentice $apprentice)
     {
         $validated = $request->validate([
@@ -81,11 +77,14 @@ class ApprenticeController extends Controller
 
         $apprentice->update($validated);
 
-        return redirect()
-            ->route('apprentices.index')
-            ->with('success', 'Aprendiz actualizado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Aprendiz actualizado correctamente.',
+            'data' => $apprentice->load(['course', 'computer'])
+        ], 200);
     }
 
+    // Eliminar un aprendiz desde la App Móvil
     public function destroy(Apprentice $apprentice)
     {
         if ($apprentice->photo) {
@@ -94,8 +93,9 @@ class ApprenticeController extends Controller
 
         $apprentice->delete();
 
-        return redirect()
-            ->route('apprentices.index')
-            ->with('success', 'Aprendiz eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Aprendiz eliminado correctamente.'
+        ], 200);
     }
 }
