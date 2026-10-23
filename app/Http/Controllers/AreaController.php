@@ -12,6 +12,10 @@ class AreaController extends Controller
     {
         $areas = Area::all();
 
+        if (! request()->expectsJson()) {
+            return view('area.index', compact('areas'));
+        }
+
         return response()->json([
             'success' => true,
             'data' => $areas
@@ -21,15 +25,16 @@ class AreaController extends Controller
     // Registrar una nueva área desde la App Móvil
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
         ]);
 
-        $area = Area::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
+        $area = Area::create($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('areas.index')->with('success', 'Área registrada correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -41,24 +46,39 @@ class AreaController extends Controller
     // Consultar una sola área por ID desde la App Móvil
     public function show(Area $area)
     {
+        if (! request()->expectsJson()) {
+            return redirect()->route('areas.index');
+        }
+
         return response()->json([
             'success' => true,
             'data' => $area
         ], 200);
     }
 
+    public function create()
+    {
+        return view('area.create');
+    }
+
+    public function edit(Area $area)
+    {
+        return view('area.edit', compact('area'));
+    }
+
     // Actualizar una área desde la App Móvil
     public function update(Request $request, Area $area)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
         ]);
 
-        $area->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
+        $area->update($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('areas.index')->with('success', 'Área actualizada correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -71,6 +91,10 @@ class AreaController extends Controller
     public function destroy(Area $area)
     {
         $area->delete();
+
+        if (! request()->expectsJson()) {
+            return redirect()->route('areas.index')->with('success', 'Área eliminada correctamente.');
+        }
 
         return response()->json([
             'success' => true,

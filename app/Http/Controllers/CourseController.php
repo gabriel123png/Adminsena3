@@ -14,6 +14,10 @@ class CourseController extends Controller
     {
         $courses = Course::with(['area', 'trainingCenter'])->get();
 
+        if (! request()->expectsJson()) {
+            return view('course.index', compact('courses'));
+        }
+
         return response()->json([
             'success' => true,
             'data' => $courses
@@ -23,19 +27,18 @@ class CourseController extends Controller
     // Registrar un nuevo curso desde la App Móvil
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_number' => 'required|string|max:255',
             'day' => 'required|string|max:255',
             'area_id' => 'required|exists:areas,id',
             'training_center_id' => 'required|exists:training_centers,id',
         ]);
 
-        $course = Course::create([
-            'course_number' => $request->course_number,
-            'day' => $request->day,
-            'area_id' => $request->area_id,
-            'training_center_id' => $request->training_center_id,
-        ]);
+        $course = Course::create($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('courses.index')->with('success', 'Curso registrado correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -47,28 +50,47 @@ class CourseController extends Controller
     // Consultar un solo curso por ID desde la App Móvil
     public function show(Course $course)
     {
+        if (! request()->expectsJson()) {
+            return redirect()->route('courses.index');
+        }
+
         return response()->json([
             'success' => true,
             'data' => $course->load(['area', 'trainingCenter'])
         ], 200);
     }
 
+    public function create()
+    {
+        $areas = Area::orderBy('nombre')->get();
+        $trainingCenters = Training_center::orderBy('name')->get();
+
+        return view('course.create', compact('areas', 'trainingCenters'));
+    }
+
+    public function edit(Course $course)
+    {
+        $areas = Area::orderBy('nombre')->get();
+        $trainingCenters = Training_center::orderBy('name')->get();
+
+        return view('course.edit', compact('course', 'areas', 'trainingCenters'));
+    }
+
     // Actualizar un curso desde la App Móvil
     public function update(Request $request, Course $course)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_number' => 'required|string|max:255',
             'day' => 'required|string|max:255',
             'area_id' => 'required|exists:areas,id',
             'training_center_id' => 'required|exists:training_centers,id',
         ]);
 
-        $course->update([
-            'course_number' => $request->course_number,
-            'day' => $request->day,
-            'area_id' => $request->area_id,
-            'training_center_id' => $request->training_center_id,
-        ]);
+        $course->update($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('courses.index')->with('success', 'Curso actualizado correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -81,6 +103,10 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         $course->delete();
+
+        if (! request()->expectsJson()) {
+            return redirect()->route('courses.index')->with('success', 'Curso eliminado correctamente.');
+        }
 
         return response()->json([
             'success' => true,

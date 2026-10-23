@@ -14,6 +14,10 @@ class TeacherController extends Controller
     {
         $teachers = Teacher::with(['area', 'trainingCenter'])->get();
 
+        if (! request()->expectsJson()) {
+            return view('teacher.index', compact('teachers'));
+        }
+
         return response()->json([
             'success' => true,
             'data' => $teachers
@@ -23,19 +27,18 @@ class TeacherController extends Controller
     // Registrar un nuevo instructor desde la App Móvil
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:teachers,email',
             'area_id' => 'required|exists:areas,id',
             'training_center_id' => 'required|exists:training_centers,id',
         ]);
 
-        $teacher = Teacher::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'area_id' => $request->area_id,
-            'training_center_id' => $request->training_center_id,
-        ]);
+        $teacher = Teacher::create($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('teachers.index')->with('success', 'Instructor registrado correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -47,28 +50,47 @@ class TeacherController extends Controller
     // Consultar un solo instructor por ID desde la App Móvil
     public function show(Teacher $teacher)
     {
+        if (! request()->expectsJson()) {
+            return redirect()->route('teachers.index');
+        }
+
         return response()->json([
             'success' => true,
             'data' => $teacher->load(['area', 'trainingCenter'])
         ], 200);
     }
 
+    public function create()
+    {
+        $areas = Area::orderBy('nombre')->get();
+        $trainingCenters = Training_center::orderBy('name')->get();
+
+        return view('teacher.create', compact('areas', 'trainingCenters'));
+    }
+
+    public function edit(Teacher $teacher)
+    {
+        $areas = Area::orderBy('nombre')->get();
+        $trainingCenters = Training_center::orderBy('name')->get();
+
+        return view('teacher.edit', compact('teacher', 'areas', 'trainingCenters'));
+    }
+
     // Actualizar un instructor desde la App Móvil
     public function update(Request $request, Teacher $teacher)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:teachers,email,' . $teacher->id,
             'area_id' => 'required|exists:areas,id',
             'training_center_id' => 'required|exists:training_centers,id',
         ]);
 
-        $teacher->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'area_id' => $request->area_id,
-            'training_center_id' => $request->training_center_id,
-        ]);
+        $teacher->update($validated);
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('teachers.index')->with('success', 'Instructor actualizado correctamente.');
+        }
 
         return response()->json([
             'success' => true,
@@ -81,6 +103,10 @@ class TeacherController extends Controller
     public function destroy(Teacher $teacher)
     {
         $teacher->delete();
+
+        if (! request()->expectsJson()) {
+            return redirect()->route('teachers.index')->with('success', 'Instructor eliminado correctamente.');
+        }
 
         return response()->json([
             'success' => true,

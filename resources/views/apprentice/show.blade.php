@@ -11,7 +11,7 @@
             <dt class="col-sm-3">Foto</dt>
             <dd class="col-sm-9">
                 @if($apprentice->photo)
-                    <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 140px; height: 140px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 140px; height: 140px; object-fit: cover; border-radius: 1rem;">
                 @else
                     Sin foto
                 @endif

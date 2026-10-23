@@ -5,14 +5,133 @@
 @section('content')
 
 <style>
+    .home-page {
+        --sena-green: #39a900;
+        --sena-dark-green: #247400;
+        --sena-ink: #183126;
+        --sena-muted: #617168;
+    }
+
+    .home-hero {
+        position: relative;
+        padding: clamp(2rem, 6vw, 4.5rem) 1.5rem;
+        overflow: hidden;
+        text-align: center;
+        background:
+            radial-gradient(circle at 10% 15%, rgba(57, 169, 0, .12), transparent 28%),
+            linear-gradient(135deg, #f4faef 0%, #ffffff 55%, #eff8e9 100%);
+        border: 1px solid #e3efdc;
+        border-radius: 1.5rem;
+    }
+
+    .home-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: 1rem;
+        padding: .45rem .85rem;
+        color: var(--sena-dark-green);
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        background: #e6f4dd;
+        border-radius: 999px;
+    }
+
+    .home-title {
+        max-width: 760px;
+        margin: 0 auto .75rem;
+        color: var(--sena-ink);
+        font-size: clamp(2rem, 5vw, 3.6rem);
+        font-weight: 800;
+        letter-spacing: -.045em;
+        line-height: 1.08;
+    }
+
+    .home-title span {
+        color: var(--sena-green);
+    }
+
+    .home-description {
+        max-width: 620px;
+        margin: 0 auto;
+        color: var(--sena-muted);
+        font-size: clamp(1rem, 2vw, 1.15rem);
+        line-height: 1.7;
+    }
+
+    .home-section-heading {
+        margin: 0 0 1.25rem;
+        color: var(--sena-ink);
+        font-size: clamp(1.35rem, 3vw, 1.8rem);
+        font-weight: 750;
+    }
+
+    .home-section-description {
+        margin: -.75rem 0 1.75rem;
+        color: var(--sena-muted);
+    }
+
+    .dashboard-grid {
+        --bs-gutter-x: 1.25rem;
+        --bs-gutter-y: 1.25rem;
+    }
+
+    .dashboard-grid > div {
+        display: flex;
+    }
+
     .dashboard-card {
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #e6ece7;
+        border-radius: 1rem;
         animation: dashboard-card-in 450ms ease-out both;
-        transition: transform 180ms ease, box-shadow 180ms ease;
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
     .dashboard-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.14) !important;
+        transform: translateY(-5px);
+        border-color: #c9e2bb;
+        box-shadow: 0 1rem 2rem rgba(26, 70, 37, .11) !important;
+    }
+
+    .dashboard-card .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.75rem 1.5rem;
+    }
+
+    .dashboard-card .card-title {
+        margin: .25rem 0 .6rem;
+        color: var(--sena-ink);
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .dashboard-card .card-text {
+        flex: 1;
+        max-width: 260px;
+        margin-bottom: 1.25rem;
+        color: var(--sena-muted);
+        line-height: 1.6;
+    }
+
+    .dashboard-card .btn {
+        min-width: 150px;
+        padding: .65rem 1rem;
+        background-color: var(--sena-green);
+        border-color: var(--sena-green);
+        border-radius: .65rem;
+        font-weight: 650;
+    }
+
+    .dashboard-card .btn:hover,
+    .dashboard-card .btn:focus-visible {
+        background-color: var(--sena-dark-green);
+        border-color: var(--sena-dark-green);
     }
 
     .dashboard-grid > div:nth-child(1) .dashboard-card { animation-delay: 60ms; }
@@ -31,116 +150,88 @@
         .dashboard-card { animation: none; transition: none; }
     }
 
+    .sena-carousel {
+        overflow: hidden;
+        border-radius: 1.25rem;
+        box-shadow: 0 1.25rem 2.5rem rgba(18, 48, 28, .14);
+    }
+
     .sena-carousel-image {
-        height: 260px;
+        height: clamp(230px, 35vw, 390px);
         object-fit: cover;
     }
 
+    .sena-carousel .carousel-item {
+        position: relative;
+    }
+
+    .sena-carousel .carousel-item::after {
+        position: absolute;
+        inset: 35% 0 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, .68));
+        content: "";
+        pointer-events: none;
+    }
+
+    .sena-carousel .carousel-caption {
+        z-index: 1;
+        right: 8%;
+        bottom: 2rem;
+        left: 8%;
+        text-align: left;
+    }
+
+    .sena-carousel .carousel-caption h5 {
+        font-size: clamp(1.25rem, 3vw, 2rem);
+        font-weight: 750;
+    }
+
+    .sena-carousel .carousel-caption p {
+        margin-bottom: 0;
+        font-size: clamp(.9rem, 1.7vw, 1.05rem);
+    }
+
+    .apprentice-welcome {
+        padding: clamp(2.5rem, 8vw, 5rem) 1.5rem;
+        color: var(--sena-ink);
+        text-align: center;
+        background: linear-gradient(135deg, #f4faef, #fff);
+        border: 1px solid #e3efdc;
+        border-radius: 1.5rem;
+    }
+
+    .apprentice-welcome h1 {
+        margin-bottom: .75rem;
+        font-weight: 800;
+    }
+
+    .apprentice-welcome p {
+        margin-bottom: 0;
+        color: var(--sena-muted);
+    }
+
     @media (max-width: 576px) {
-        .sena-carousel-image { height: 160px; }
+        .home-hero { padding-right: 1rem; padding-left: 1rem; }
+        .sena-carousel-image { height: 220px; }
+        .sena-carousel .carousel-caption { bottom: 1.25rem; }
     }
 </style>
 
-@guest
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h1 class="h3 text-center mb-4">Iniciar sesión</h1>
-
-                @if(session('status'))
-                    <div class="alert alert-success">{{ session('status') }}</div>
-                @endif
-
-                <form action="{{ route('login.store') }}" method="POST">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Ingresar como</label>
-                        <select id="role" name="role" class="form-select" required>
-                            <option value="">-- Selecciona una opción --</option>
-                            <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrador</option>
-                            <option value="aprendiz" {{ old('role', 'aprendiz') === 'aprendiz' ? 'selected' : '' }}>Aprendiz SENA</option>
-                        </select>
-                        @error('role')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="account" class="form-label">Escribe tu nombre</label>
-                        <input id="account" name="account_name" list="account-options" class="form-control" value="{{ old('account_name') }}" placeholder="Escribe o selecciona tu nombre" required autofocus autocomplete="off">
-                        <datalist id="account-options">
-                            @foreach($apprentices as $apprentice)
-                                <option value="{{ $apprentice->name }}" data-role="aprendiz" data-email="{{ $apprentice->email }}"></option>
-                            @endforeach
-                            @foreach($administrators as $administrator)
-                                <option value="{{ $administrator->name }}" data-role="admin" data-email="{{ $administrator->email }}"></option>
-                            @endforeach
-                        </datalist>
-                        @error('account_name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input id="password" type="password" name="password" class="form-control" required>
-                        @error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <input id="remember" type="checkbox" name="remember" class="form-check-input" value="1" {{ request()->cookie('remembered_email_' . old('role', 'aprendiz')) ? 'checked' : '' }}>
-                        <label for="remember" class="form-check-label">Recordar mi sesión</label>
-                    </div>
-
-                    <button type="submit" class="btn btn-success w-100">Ingresar</button>
-                </form>
-                <script>
-                    const roleField = document.getElementById('role');
-                    const accountField = document.getElementById('account');
-                    const accountOptions = Array.from(document.querySelectorAll('#account-options option'));
-                    const rememberField = document.getElementById('remember');
-                    const rememberedEmails = {
-                        admin: @json(request()->cookie('remembered_email_admin')),
-                        aprendiz: @json(request()->cookie('remembered_email_aprendiz'))
-                    };
-
-                    function updateAccounts() {
-                        const selectedRole = roleField.value;
-                        const rememberedEmail = rememberedEmails[selectedRole];
-                        const rememberedOption = accountOptions.find(option => option.dataset.email === rememberedEmail && option.dataset.role === selectedRole);
-
-                        accountField.value = rememberedOption ? rememberedOption.value : '';
-                        rememberField.checked = Boolean(rememberedOption);
-                    }
-
-                    roleField.addEventListener('change', () => {
-                        updateAccounts();
-                    });
-
-                    updateAccounts();
-                </script>
-            </div>
-        </div>
-    </div>
-</div>
-@else
-@if(auth()->user()->role === 'aprendiz')
-<div class="text-center">
+<div class="home-page">
+@if(auth()->check() && auth()->user()->role === 'aprendiz')
+<section class="apprentice-welcome">
+    <span class="home-eyebrow">AdminSena · Formación</span>
     <h1 class="mb-4">Bienvenido, aprendiz</h1>
     <p class="lead">Has iniciado sesión como aprendiz del SENA.</p>
-</div>
+</section>
 @else
-<div class="text-center">
+<section class="home-hero">
+    <span class="home-eyebrow">Sistema de gestión educativa</span>
+    <h1 class="home-title">Bienvenido a <span>AdminSena</span></h1>
+    <p class="home-description">Una plataforma para organizar y gestionar los recursos de formación del SENA desde un solo lugar.</p>
+</section>
 
-    <h1 class="mb-4">
-        Bienvenido a AdminSena
-    </h1>
-
-    <p class="lead">
-        Sistema de administración del SENA
-    </p>
-
-</div>
-
-<div id="senaCarousel" class="carousel slide mt-4 mb-5" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
+<div id="senaCarousel" class="carousel slide sena-carousel mt-4 mb-5" data-bs-ride="carousel" data-bs-interval="4500" data-bs-pause="hover">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#senaCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Imagen 1"></button>
         <button type="button" data-bs-target="#senaCarousel" data-bs-slide-to="1" aria-label="Imagen 2"></button>
@@ -149,21 +240,21 @@
     <div class="carousel-inner rounded shadow-sm">
         <div class="carousel-item active">
             <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80" class="d-block w-100 sena-carousel-image" alt="Estudiantes en formación">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+            <div class="carousel-caption">
                 <h5>Formación para el futuro</h5>
                 <p>Educación y oportunidades para todos.</p>
             </div>
         </div>
         <div class="carousel-item">
             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1400&q=80" class="d-block w-100 sena-carousel-image" alt="Trabajo colaborativo en formación">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+            <div class="carousel-caption">
                 <h5>Aprendizaje colaborativo</h5>
                 <p>Construyendo conocimiento en equipo.</p>
             </div>
         </div>
         <div class="carousel-item">
             <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80" class="d-block w-100 sena-carousel-image" alt="Tecnología y aprendizaje">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+            <div class="carousel-caption">
                 <h5>Innovación y tecnología</h5>
                 <p>Preparación para los nuevos desafíos.</p>
             </div>
@@ -180,8 +271,11 @@
 </div>
 
 
-<div class="row mt-5 dashboard-grid">
+<section class="mt-5" aria-labelledby="management-heading">
+    <h2 id="management-heading" class="home-section-heading">Panel de administración</h2>
+    <p class="home-section-description">Selecciona un módulo para consultar o gestionar su información.</p>
 
+<div class="row dashboard-grid">
 
     <!-- Áreas -->
     <div class="col-md-4 mb-4">
@@ -364,7 +458,7 @@
 
 
 </div>
+</section>
 @endif
-
-@endguest
+</div>
 @endsection

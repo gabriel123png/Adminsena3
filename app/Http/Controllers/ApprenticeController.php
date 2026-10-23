@@ -15,6 +15,10 @@ class ApprenticeController extends Controller
     {
         $apprentices = Apprentice::with(['course', 'computer'])->get();
 
+        if (! request()->expectsJson()) {
+            return view('apprentice.index', compact('apprentices'));
+        }
+
         return response()->json([
             'success' => true,
             'data' => $apprentices
@@ -39,6 +43,10 @@ class ApprenticeController extends Controller
 
         $apprentice = Apprentice::create($validated);
 
+        if (! $request->expectsJson()) {
+            return redirect()->route('apprentices.index')->with('success', 'Aprendiz registrado correctamente.');
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Aprendiz registrado correctamente.',
@@ -49,10 +57,32 @@ class ApprenticeController extends Controller
     // Consultar un solo aprendiz por ID desde la App Móvil
     public function show(Apprentice $apprentice)
     {
+        if (! request()->expectsJson()) {
+            $apprentice->load(['course', 'computer']);
+
+            return view('apprentice.show', compact('apprentice'));
+        }
+
         return response()->json([
             'success' => true,
             'data' => $apprentice->load(['course', 'computer'])
         ], 200);
+    }
+
+    public function create()
+    {
+        $courses = Course::orderBy('course_number')->get();
+        $computers = Computer::orderBy('number')->get();
+
+        return view('apprentice.create', compact('courses', 'computers'));
+    }
+
+    public function edit(Apprentice $apprentice)
+    {
+        $courses = Course::orderBy('course_number')->get();
+        $computers = Computer::orderBy('number')->get();
+
+        return view('apprentice.edit', compact('apprentice', 'courses', 'computers'));
     }
 
     // Actualizar un aprendiz desde la App Móvil
@@ -77,6 +107,10 @@ class ApprenticeController extends Controller
 
         $apprentice->update($validated);
 
+        if (! $request->expectsJson()) {
+            return redirect()->route('apprentices.index')->with('success', 'Aprendiz actualizado correctamente.');
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Aprendiz actualizado correctamente.',
@@ -92,6 +126,10 @@ class ApprenticeController extends Controller
         }
 
         $apprentice->delete();
+
+        if (! request()->expectsJson()) {
+            return redirect()->route('apprentices.index')->with('success', 'Aprendiz eliminado correctamente.');
+        }
 
         return response()->json([
             'success' => true,

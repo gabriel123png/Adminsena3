@@ -1,288 +1,168 @@
 <style>
-    :root {
-        --sena-green: #39A900;
-        --sena-dark: #1f1f1f;
-        --sena-hover: #2f8d00;
+    .admin-navbar {
+        --sena-green: #39a900;
+        --sena-green-dark: #287d00;
+        position: relative;
+        z-index: 10;
+        padding: .75rem 0;
+        background: linear-gradient(110deg, var(--sena-green), #319400);
+        box-shadow: 0 4px 16px rgba(27, 77, 16, .16);
     }
 
-    .admin-navbar {
-        background-color: var(--sena-green) !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    .admin-navbar .container-fluid {
+        max-width: 1560px;
+    }
+
+    .admin-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: .65rem;
+        margin: 0;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 750;
+        letter-spacing: -.02em;
     }
 
     .admin-logo {
         width: 42px;
         height: 42px;
-        object-fit: contain;
-        background: white;
-        border-radius: 6px;
         padding: 3px;
+        object-fit: contain;
+        background: #fff;
+        border: 1px solid rgba(255, 255, 255, .6);
+        border-radius: 11px;
     }
 
-    .admin-brand {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: white !important;
-        letter-spacing: .3px;
+    .admin-navbar .navbar-toggler {
+        padding: .45rem .6rem;
+        border: 1px solid rgba(255, 255, 255, .55);
+        border-radius: 10px;
+    }
+
+    .admin-navbar .navbar-toggler:focus {
+        box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .2);
+    }
+
+    .admin-menu {
+        align-items: center;
+    }
+
+    .admin-nav {
+        align-items: center;
+        gap: .2rem;
     }
 
     .admin-navbar .nav-link {
-        color: rgba(255, 255, 255, .95) !important;
-        padding: 10px 14px !important;
-        border-radius: 6px;
-        margin: 2px;
-        transition: .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .62rem .72rem;
+        color: rgba(255, 255, 255, .94);
+        font-size: .91rem;
+        font-weight: 550;
+        white-space: nowrap;
+        border-radius: .7rem;
+        transition: background-color .18s ease, color .18s ease, transform .18s ease;
     }
 
-    .admin-navbar .nav-link:hover {
-        background-color: rgba(0, 0, 0, .15);
-        color: white !important;
+    .admin-navbar .nav-link:hover,
+    .admin-navbar .nav-link:focus-visible {
+        color: #fff;
+        background: rgba(18, 69, 0, .22);
+        transform: translateY(-1px);
     }
 
-    /* Botón hamburguesa */
-    .admin-toggler {
-        border: 1px solid rgba(255, 255, 255, .6) !important;
-        padding: 7px 10px;
-        border-radius: 6px;
+    .admin-navbar .nav-link.active {
+        color: var(--sena-green-dark);
+        font-weight: 700;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(21, 68, 0, .12);
     }
 
-    .admin-toggler:focus {
-        box-shadow: none !important;
+    .admin-nav-icon {
+        font-size: 1rem;
+        line-height: 1;
     }
 
-    /* Menú colapsado en todos los tamaños */
-    .admin-menu {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, .18);
+    @media (max-width: 1199.98px) {
+        .admin-menu {
+            margin-top: .85rem;
+            padding-top: .7rem;
+            border-top: 1px solid rgba(255, 255, 255, .28);
+        }
+
+        .admin-nav {
+            align-items: stretch;
+            gap: .15rem;
+        }
+
+        .admin-navbar .nav-link {
+            width: 100%;
+            padding: .72rem .85rem;
+        }
     }
 
-    .admin-menu .nav-link {
-        color: #333 !important;
-        padding: 12px 14px !important;
-        margin: 2px 0;
-        border-radius: 7px;
-    }
-
-    .admin-menu .nav-link:hover {
-        background-color: #f1f1f1;
-        color: var(--sena-green) !important;
+    @media (prefers-reduced-motion: reduce) {
+        .admin-navbar .nav-link {
+            transition: none;
+        }
     }
 </style>
 
-<nav class="navbar navbar-dark admin-navbar">
-
-
-<div class="container-fluid px-3 px-lg-4">
-
-    {{-- LOGO --}}
-    <a class="navbar-brand d-flex align-items-center"
-       href="{{ route('home') }}">
-
-        <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAM-jtaxKYljPzx7-TEn-u8MQWRjFmSUTMIrZAYLFB4ZfIHjBOlRQPlGA&s=10"
-            alt="Logo SENA"
-            class="admin-logo me-2">
-
-        <span class="admin-brand">
-            AdminSena
-        </span>
-
-    </a>
-
-
-    {{-- HAMBURGUESA --}}
-    <button
-        class="navbar-toggler admin-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#adminNavbar"
-        aria-controls="adminNavbar"
-        aria-expanded="false"
-        aria-label="Abrir menú">
-
-        <span class="navbar-toggler-icon"></span>
-
-    </button>
-
-
-    {{-- MENÚ --}}
-    <div
-        class="collapse navbar-collapse admin-menu"
-        id="adminNavbar">
-
-        @if(auth()->check() && auth()->user()->role === 'admin')
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-
-            {{-- INICIO --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('home') }}">
-
-                    🏠 Inicio
-
-                </a>
-
-            </li>
-
-
-            {{-- ÁREAS --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('areas.index') }}">
-
-                    📁 Áreas
-
-                </a>
-
-            </li>
-
-
-            {{-- CENTROS --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('training_centers.create') }}">
-
-                    🏢 Centros de formación
-
-                </a>
-
-            </li>
-
-
-            {{-- COMPUTADORES --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('computers.create') }}">
-
-                    💻 Computadores
-
-                </a>
-
-            </li>
-
-
-            {{-- CURSOS --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('courses.index') }}">
-
-                    📚 Cursos
-
-                </a>
-
-            </li>
-
-
-            {{-- INSTRUCTORES --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('teachers.index') }}">
-
-                    👨‍🏫 Instructores
-
-                </a>
-
-            </li>
-
-
-            {{-- APRENDICES --}}
-            <li class="nav-item">
-
-                <a
-                    class="nav-link"
-                    href="{{ route('apprentices.index') }}">
-
-                    👨‍🎓 Aprendices
-
-                </a>
-
-            </li>
-
-
-        </ul>
-        @endif
-
-        @if(auth()->check() && auth()->user()->role === 'aprendiz')
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('apprentice.dashboard') }}">🎓 Mi panel</a>
-                </li>
-            </ul>
-        @endif
-
-
-        {{-- USUARIO --}}
-        @auth
-
-            <div class="dropdown">
-
-                <button
-                    class="btn btn-light dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-
-                    {{ auth()->user()->name }}
-
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-end">
-
-                    <li>
-
+<nav class="navbar navbar-expand-xl navbar-dark admin-navbar">
+    <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand admin-brand" href="{{ route('home') }}">
+            <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAM-jtaxKYljPzx7-TEn-u8MQWRjFmSUTMIrZAYLFB4ZfIHjBOlRQPlGA&s=10"
+                alt="Logo SENA"
+                class="admin-logo">
+            <span>AdminSena</span>
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminNavbar"
+            aria-controls="adminNavbar"
+            aria-expanded="false"
+            aria-label="Abrir o cerrar menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse admin-menu" id="adminNavbar">
+            @php
+                $navigationItems = [
+                    ['label' => 'Inicio', 'icon' => '🏠', 'route' => 'home', 'active' => 'home'],
+                    ['label' => 'Áreas', 'icon' => '📁', 'route' => 'areas.index', 'active' => 'areas.*'],
+                    ['label' => 'Centros', 'icon' => '🏢', 'route' => 'training_centers.index', 'active' => 'training_centers.*'],
+                    ['label' => 'Computadores', 'icon' => '💻', 'route' => 'computers.index', 'active' => 'computers.*'],
+                    ['label' => 'Cursos', 'icon' => '📚', 'route' => 'courses.index', 'active' => 'courses.*'],
+                    ['label' => 'Instructores', 'icon' => '👨‍🏫', 'route' => 'teachers.index', 'active' => 'teachers.*'],
+                    ['label' => 'Aprendices', 'icon' => '🎓', 'route' => 'apprentices.index', 'active' => 'apprentices.*'],
+                ];
+
+                if (auth()->check() && auth()->user()->role === 'aprendiz') {
+                    $navigationItems = [
+                        ['label' => 'Mi panel', 'icon' => '🎓', 'route' => 'apprentice.dashboard', 'active' => 'apprentice.dashboard'],
+                    ];
+                }
+            @endphp
+
+            <ul class="navbar-nav admin-nav ms-auto">
+                @foreach($navigationItems as $item)
+                    <li class="nav-item">
                         <a
-                            class="dropdown-item"
-                            href="#">
-
-                            {{ auth()->user()->email }}
-
+                            class="nav-link {{ request()->routeIs($item['active']) ? 'active' : '' }}"
+                            href="{{ route($item['route']) }}"
+                            @if(request()->routeIs($item['active'])) aria-current="page" @endif>
+                            <span class="admin-nav-icon" aria-hidden="true">{{ $item['icon'] }}</span>
+                            <span>{{ $item['label'] }}</span>
                         </a>
-
                     </li>
-
-                    <li>
-
-                        <form
-                            action="{{ route('logout') }}"
-                            method="POST">
-
-                            @csrf
-
-                            <button
-                                type="submit"
-                                class="dropdown-item text-danger">
-
-                                Cerrar sesión
-
-                            </button>
-
-                        </form>
-
-                    </li>
-
-                </ul>
-
-            </div>
-
-        @endauth
-
+                @endforeach
+            </ul>
+        </div>
     </div>
-
-</div>
 </nav>

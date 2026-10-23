@@ -33,7 +33,7 @@
                         <td>{{ $apprentice->id }}</td>
                         <td>
                             @if($apprentice->photo)
-                                <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $apprentice->photo) }}" alt="Foto de {{ $apprentice->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
                             @else
                                 Sin foto
                             @endif
