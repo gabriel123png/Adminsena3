@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course_teacher as CourseTeacher;
+use App\Models\Course;
+use App\Models\Teacher;
 
 class CourseTeacherController extends Controller
 {
+    public function create()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'courses' => Course::orderBy('course_number')->get(['id', 'course_number']),
+                'teachers' => Teacher::orderBy('name')->get(['id', 'name']),
+            ],
+        ]);
+    }
+
     // Listar todas las asignaciones de cursos e instructores
     public function index()
     {
