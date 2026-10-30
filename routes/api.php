@@ -24,11 +24,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/', function () {
-    return response()->json([
-        'status' => 'ok',
-        'message' => 'API AdminSENA activa'
-    ]);
-});
+    if (auth()->check() && auth()->user()->role === 'aprendiz') {
+        return redirect()->route('apprentice.dashboard');
+    }
+
+    return view('home');
+})->name('home');
 
 Route::get('/areas', [AreaController::class, 'index'])->name('api.v1.areas.index');
 Route::get('/areas/create', [AreaController::class, 'create'])->name('api.v1.area.create');
