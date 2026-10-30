@@ -14,5 +14,7 @@ class Area extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'imagen_url',
+        'imagen_public_id',
     ];
 }
