@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('number');
             $table->string('brand');
+            $table->string('imagen')->nullable();
+            $table->string('public_id')->nullable();
             $table->timestamps();
+            
         });
     }
 
