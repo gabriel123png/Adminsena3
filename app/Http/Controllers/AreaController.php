@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
+
 use App\Models\Area;
 use Cloudinary\Cloudinary;
 
 class AreaController extends Controller
 {
+
+   
     // Listar todas las áreas para la App Móvil
     public function index()
     {
@@ -49,15 +54,40 @@ class AreaController extends Controller
 
         unset($validated['imagen']);
         $area = Area::create($validated);
+        // 1. Validar los campos y la imagen con los nombres que usas ('nombre', 'descripcion', 'imagen')
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
 
-        if (! $request->expectsJson()) {
-            return redirect()->route('areas.index')->with('success', 'Área registrada correctamente.');
-        }
+        $file = $request->file('imagen');
+
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => config('services.cloudinary.cloud_name'),
+                'api_key' => config('services.cloudinary.api_key'),
+                'api_secret' => config('services.cloudinary.api_secret'),
+            ],
+            'url' => ['secure' => true],
+        ]);
+
+        $resultado = $cloudinary->uploadApi()->upload(
+            $file->getRealPath(),
+            [
+                'folder' => 'area',
+                'resource_type' => 'image',
+            ]
+        );
+
+        $area = Area::create([
+            'name' => $request->name,
+            'imagen_url' => $resultado['secure_url'],
+            'imagen_public_id' => $resultado['public_id'],
+        ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Área registrada correctamente.',
-            'data' => $area
+            'message' => 'Area creada correctamente',
+            'data' => $area,
         ], 201);
     }
 

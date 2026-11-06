@@ -32,8 +32,11 @@ return [
     ],
     'cloudinary' => [
         'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+<<<<<<< HEAD
         'api_key'    => env('CLOUDINARY_API_KEY'),
+=======
+        'api_key' => env('CLOUDINARY_API_KEY'),
+>>>>>>> 4611fd716c171cb6864b4a9c6d2dab5f15c394a8
         'api_secret' => env('CLOUDINARY_API_SECRET'),
     ],
-
 ];
