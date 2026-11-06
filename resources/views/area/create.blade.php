@@ -12,7 +12,7 @@
 
     <div class="card-body">
 
-        <form action="{{ route('areas.store') }}" method="POST">
+        <form action="{{ route('areas.store') }}" method="POST" enctype="multipart/form-data">
 
             @csrf
 
@@ -42,6 +42,12 @@
                     class="form-control"
                     rows="4">{{ old('descripcion') }}</textarea>
 
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Imagen</label>
+                <input type="file" name="imagen" class="form-control" accept="image/*">
+                @error('imagen') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
 
             <a

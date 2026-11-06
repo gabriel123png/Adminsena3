@@ -6,7 +6,7 @@
 
     <h2>Registrar Centro de Formación</h2>
 
-    <form action="{{ route('training_centers.store') }}" method="POST">
+    <form action="{{ route('training_centers.store') }}" method="POST" enctype="multipart/form-data">
 
         @csrf
 
@@ -37,6 +37,11 @@
             @enderror
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            <input type="file" name="imagen" class="form-control" accept="image/*">
+            @error('imagen') <div class="text-danger">{{ $message }}</div> @enderror
+        </div>
 
         <button type="submit" class="btn btn-success">
             Guardar

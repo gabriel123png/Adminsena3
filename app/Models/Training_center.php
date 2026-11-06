@@ -12,8 +12,15 @@ class Training_center extends Model
     
      protected $table = 'training_centers';
 
+    protected $attributes = [
+        'imagen_url' => '',
+        'imagen_public_id' => '',
+    ];
+
     protected $fillable = [
         'name',
         'location',
+        'imagen_url',
+        'imagen_public_id',
     ];
 }

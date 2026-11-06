@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Training_center as TrainingCenter;
+use Cloudinary\Cloudinary;
+
 
 class TrainingCenterController extends Controller
 {
@@ -28,8 +30,24 @@ class TrainingCenterController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
+        if ($request->hasFile('imagen')) {
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('services.cloudinary.cloud_name'),
+                    'api_key' => config('services.cloudinary.api_key'),
+                    'api_secret' => config('services.cloudinary.api_secret'),
+                ],
+                'url' => ['secure' => true],
+            ]);
+            $image = $cloudinary->uploadApi()->upload($request->file('imagen')->getRealPath());
+            $validated['imagen_url'] = $image['secure_url'];
+            $validated['imagen_public_id'] = $image['public_id'];
+        }
+
+        unset($validated['imagen']);
         $trainingCenter = TrainingCenter::create($validated);
 
         if (! $request->expectsJson()) {

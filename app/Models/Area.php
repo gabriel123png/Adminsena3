@@ -11,8 +11,16 @@ class Area extends Model
     
     protected $table = 'areas';
 
+    protected $attributes = [
+        'descripcion' => '',
+        'imagen_url' => '',
+        'imagen_public_id' => '',
+    ];
+
     protected $fillable = [
         'nombre',
         'descripcion',
+        'imagen_url',
+        'imagen_public_id',
     ];
 }

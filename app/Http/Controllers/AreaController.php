@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Area;
+use Cloudinary\Cloudinary;
 
 class AreaController extends Controller
 {
@@ -28,8 +29,25 @@ class AreaController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
+        $validated['descripcion'] = $validated['descripcion'] ?? '';
+        if ($request->hasFile('imagen')) {
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('services.cloudinary.cloud_name'),
+                    'api_key' => config('services.cloudinary.api_key'),
+                    'api_secret' => config('services.cloudinary.api_secret'),
+                ],
+                'url' => ['secure' => true],
+            ]);
+            $image = $cloudinary->uploadApi()->upload($request->file('imagen')->getRealPath());
+            $validated['imagen_url'] = $image['secure_url'];
+            $validated['imagen_public_id'] = $image['public_id'];
+        }
+
+        unset($validated['imagen']);
         $area = Area::create($validated);
 
         if (! $request->expectsJson()) {
@@ -74,6 +92,7 @@ class AreaController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
+        $validated['descripcion'] = $validated['descripcion'] ?? '';
         $area->update($validated);
 
         if (! $request->expectsJson()) {
